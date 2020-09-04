@@ -26,6 +26,21 @@ function style(feature) {
     };
 }
 
+var geojson;
+function formatNumber(num) {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+}
+
 $.getJSON("./data/towns.geojson", function(data) {
-    L.geoJSON(data, {style: style}).addTo(map);
+    geojson = L.geoJSON(data, {
+        onEachFeature: function(feature, layer) {
+            layer.bindPopup(
+                '<div class="popup">' +
+                'Town: ' + feature.properties.name_eng + '<br />' +
+                '<b>' + 'Population: ' + formatNumber(feature.properties.pop_2015) + '</b>' +
+                '</div>'
+            );
+        },
+        style: style
+    }).addTo(map)
 })
